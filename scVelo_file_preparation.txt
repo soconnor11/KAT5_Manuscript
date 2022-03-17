@@ -1,0 +1,38 @@
+#------------ Prepare all files for scVelo ---------------#
+
+#------- scRNA-seq data ------#
+
+# Dump out processed scRNA-seq data analysis as a loom file (important especially if you want to use the same UMAP / tSNE coordinates)
+
+
+#------- velocyto ------------#
+
+# Set up post-processing bam files for velocyto
+
+docker pull cplaisier/scrna_seq_velocity_6_7_2021
+
+
+# Run the docker container using the following command (replace with the scRNA-seq “outs” folder directory / folder where bam file is):
+
+docker run -it -v '<path to scRNA-seq profiles outs directory>:/files' cplaisier/scrna_seq_velocity_6_7_2021 
+
+samtools sort -t CB -O BAM -o cellsorted_possorted_genome_bam.bam possorted_genome_bam.bam  # takes a while
+
+
+# Run velocyto and dump out loom file
+
+# Download the genome annotation (.gtf file) and the expressed repeats annotation file (.gtf file) (https://velocyto.org/velocyto.py/tutorial/cli.html) 
+# To find which reference genome to use: /_invocation (10X)
+# Save in folder where scRNA-seq data loom file is located or add path information to velocyto run10x command
+
+
+# Run the docker container using the following command (replace with folder where scRNA-seq process data is)
+
+docker run -it -v '<path to scRNA-seq profiles>:/files' cplaisier/scrna_seq_velocity_6_7_2021
+pip3 install numpy==1.21.1
+
+velocyto run10x -m GRCh38_rmsk.gtf CytmRNA-CD8KO_onlyhg38 genes_GRCh38.gtf
+# GRCh38_rmsk.gtf is repeat masker file
+# genes_GRCh38.gtf is the genome annotation file
+
+# This will dump a loom file into a new folder (velocyto) in your directory
